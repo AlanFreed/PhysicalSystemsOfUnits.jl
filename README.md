@@ -48,4 +48,4 @@ while general SI units include:
 
 Of the seven kinds of physical units that exist, only four are implemented here, namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.
 
-Types PysicalScalar, PhysicalVector and PhysicalMatrix, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalMatrices, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
+Types PhysicalScalar, PhysicalVector and PhysicalMatrix, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalMatrices, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
