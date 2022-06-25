@@ -46,6 +46,6 @@ while general SI units include:
 
 ## Notes
 
-Of the seven kinds of physical units that exist, only four are implemented here, namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.
+Of the seven kinds of physical units that exist, only four are implemented here, namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.  I wrote this package for personal consumption, unbeknownst of the existing package [Unitful.jl](https://github.com/PainterQubits/Unitful.jl), which is quite advanced and well supported.  In the future, it would be good to incorporate them.
 
 Types PhysicalScalar, PhysicalVector and PhysicalMatrix, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalMatrices, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
