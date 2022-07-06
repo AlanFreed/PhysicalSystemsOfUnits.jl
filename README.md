@@ -4,6 +4,10 @@ Physical units are implementations of the abstract type
 
   * PhysicalSystemOfUnits
 
+```
+abstract type PhysicalSystemOfUnits end
+```
+
 with concrete types being provided for the following systems of units
 
   * CGS - Centimeter, Gram, Second system of units
