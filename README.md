@@ -8,15 +8,33 @@ with concrete types being provided for the following systems of units
 
   * CGS - Centimeter, Gram, Second system of units
 
+```
+struct CGS <: PhysicalSystemOfUnits
+    cm::Int8   # centimeters
+    g::Int8    # grams
+    s::Int8    # seconds
+    C::Int8    # degrees centigrade
+end
+```
+
   * SI  - International System of units
+
+```
+struct SI <: PhysicalSystemOfUnits
+    m::Int8    # meters
+    kg::Int8   # kilograms
+    s::Int8    # seconds
+    K::Int8    # Kelvin
+end
+```
 
 Methods for type testing include:
 
-  * isCGS, isSI and isDimensionless
+  * `isCGS()`, `isSI()` and `isDimensionless()`
 
 Method for conversion to string is:
 
-  * toString
+  * `toString()`
 
 Base operators that are overloaded include:
 
@@ -26,7 +44,7 @@ Operators == and ≠ test to see if the powers of like physical units are the sa
 
 Base methods that are extended include:
 
-  * copy and deepcopy
+  * `copy()` and `deepcopy()`
 
 Specific CGS units that are exported include:
 
