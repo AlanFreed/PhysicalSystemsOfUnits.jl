@@ -15,6 +15,7 @@ export
     # Type testing
     isCGS,
     isSI,
+    isDimensionless,
     # Convert a System of Units to a string
     toString,
     # CGS physical constants: specific
@@ -32,13 +33,16 @@ export
     CGS_DIMENSIONLESS,
     CGS_DISPLACEMENT,
     CGS_ENERGY,
+    CGS_ENERGY_DENSITY,
     CGS_ENTROPY,
+    CGS_ENTROPY_DENSITY,
     CGS_FORCE,
     CGS_LENGTH,
     CGS_MASS,
-    CGS_MASSDENSITY,
+    CGS_MASS_DENSITY,
     CGS_MODULUS,
     CGS_POWER,
+    CGS_POWER_DENSITY,
     CGS_SECOND,
     CGS_STIFFNESS,
     CGS_STRAIN,
@@ -66,13 +70,16 @@ export
     SI_DIMENSIONLESS,
     SI_DISPLACEMENT,
     SI_ENERGY,
+    SI_ENERGY_DENSITY,
     SI_ENTROPY,
+    SI_ENTROPY_DENSITY,
     SI_FORCE,
     SI_LENGTH,
     SI_MASS,
-    SI_MASSDENSITY,
+    SI_MASS_DENSITY,
     SI_MODULUS,
     SI_POWER,
+    SI_POWER_DENSITY,
     SI_SECOND,
     SI_STIFFNESS,
     SI_STRAIN,
@@ -85,63 +92,6 @@ export
     SI_TIME,
     SI_VELOCITY,
     SI_VOLUME
-#=
---------------------------------------------------------------------------------
-=#
-"""
-# PhysicalSystemsOfUnits
-
-Physical units are implementations of the abstract type
-
-  * PhysicalSystemOfUnits
-
-with concrete types being provided for the following systems of units
-
-  * CGS:   Centimeter, Gram, Second system of units
-
-  * SI:    International System of units
-
-Methods for type testing include:
-
-  * isCGS and isSI
-
-Method for conversion to string is:
-
-  * toString
-
-Base operators that are overloaded include:
-
-  * ==, ≠, + and -
-
-where + adds unit exponents whenever two physical fields are multiplied, and - subtracts unit exponents whenever one physical field is divided by another.
-
-Base methods that are extended include:
-
-  * copy and deepcopy
-
-Specific CGS units that are exported include:
-
-  * BARYE, CENTIGRADE, CENTIMETER, DYNE, ERG and GRAM
-
-while general CGS units include:
-
-  * CGS_ACCELERATION CGS_AREA, CGS_COMPLIANCE, CGS_DAMPING, CGS_DIMENSIONLESS, CGS_DISPLACEMENT, CGS_ENERGY, CGS_ENTROPY, CGS_FORCE, CGS_LENGTH, CGS_MASS, CGS_MASSDENSITY, CGS_MODULUS, CGS_POWER, CGS_SECOND, CGS_STIFFNESS, CGS_STRAIN, CGS_STRAINRATE, CGS_STRESS, CGS_STRESSRATE, CGS_STRETCH, CGS_STRETCHRATE, CGS_TEMPERATURE, CGS_TIME, CGS_VELOCITY and CGS_VOLUME
-
-Specific SI units that are exported include:
-
-  * JOULE, KELVIN, KILOGRAM, NEWTON, METER and PASCAL
-
-while general SI units include:
-
-  * SI_ACCELERATION, SI_AREA, SI_COMPLIANCE, SI_DAMPING, SI_DIMENSIONLESS, SI_DISPLACEMENT, SI_ENERGY, SI_ENTROPY, SI_FORCE, SI_LENGTH, SI_MASS, SI_MASSDENSITY, SI_MODULUS, SI_POWER, SI_SECOND, SI_STIFFNESS, SI_STRAIN, SI_STRAINRATE, SI_STRESS, SI_STRESSRATE, SI_STRETCH, SI_STRETCHRATE, SI_TEMPERATURE, SI_TIME, SI_VELOCITY and SI_VOLUME
-
-## Notes
-
-Of the seven kinds of physical units that exist, only four are implemented here, namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.
-
-Types PysicalScalar, PhysicalVector and PhysicalMatrix, defined in module PhysicalFields, and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalMatrices all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
-"""
-PhysicalSystemsOfUnits
 #=
 --------------------------------------------------------------------------------
 =#
@@ -166,12 +116,46 @@ end
 
 # Type testing
 
+"""
+    isCGS(u::PhysicalSystemOfUnits)::Bool
+
+Returns `true` if `u` has CGS units; otherwise, it returns `false`.
+"""
 function isCGS(u::PhysicalSystemOfUnits)::Bool
     return isa(u, CGS)
 end
 
+"""
+    isSI(u::PhysicalSystemOfUnits)::Bool
+
+Returns `true` if `u` has SI units; otherwise, it returns `false`.
+"""
 function isSI(u::PhysicalSystemOfUnits)::Bool
     return isa(u, SI)
+end
+
+"""
+    isDimensionless(u::PhysicalSystemOfUnits)::Bool
+
+Returns `true` if `u` is without physical dimension; otherwise, it returns `false`.
+"""
+function isDimensionless(u::PhysicalSystemOfUnits)::Bool
+    if isa(u, CGS)
+        if (u.cm == 0) & (u.g == 0) && (u.s == 0) && (u.C == 0)
+            return true
+        else
+            return false
+        end
+    elseif isa(u, SI)
+        if (u.m == 0) && (u.kg == 0) && (u.s == 0) && (u.K == 0)
+            return true
+        else
+            return false
+        end
+    else
+        msg = "Units must be either CGS or SI."
+        throw(ErrorException(msg))
+    end
 end
 #=
 --------------------------------------------------------------------------------
@@ -198,11 +182,19 @@ function Base.:(==)(y::SI, z::SI)::Bool
 end
 
 function Base.:(==)(y::CGS, z::SI)::Bool
-    return false
+    if (y.cm == z.m) && (y.g == z.kg) && (y.s == z.s) && (y.C == z.K)
+        return true
+    else
+        return false
+    end
 end
 
 function Base.:(==)(y::SI, z::CGS)::Bool
-    return false
+    if (y.m == z.cm) && (y.kg == z.g) && (y.s == z.s) && (y.K == z.C)
+        return true
+    else
+        return false
+    end
 end
 
 function Base.:≠(y::CGS, z::CGS)::Bool
@@ -222,11 +214,19 @@ function Base.:≠(y::SI, z::SI)::Bool
 end
 
 function Base.:≠(y::CGS, z::SI)::Bool
-    return true
+    if (y.cm ≠ z.m) || (y.g ≠ z.kg) || (y.s ≠ z.s) || (y.C ≠ z.K)
+        return true
+    else
+        return false
+    end
 end
 
 function Base.:≠(y::SI, z::CGS)::Bool
-    return true
+    if (y.m ≠ z.cm) || (y.kg ≠ z.g) || (y.s ≠ z.s) || (y.K ≠ z.C)
+        return true
+    else
+        return false
+    end
 end
 
 function Base.:+(y::CGS)::CGS
@@ -831,7 +831,7 @@ end
 --------------------------------------------------------------------------------
 =#
 
-# Specific units to the CGS system of units.
+# Specific units for the CGS system of units.
 
 const BARYE      = CGS(-1, 1, -2, 0)   # units of stress
 const CENTIGRADE = CGS(0, 0, 0, 1)     # units of degrees centigrade
@@ -842,34 +842,37 @@ const GRAM       = CGS(0, 1, 0, 0)     # units of mass
 
 # Generic units implemented in the CGS system of units.
 
-const CGS_ACCELERATION  = CGS(1, 0, -2, 0)
-const CGS_AREA          = CGS(2, 0, 0, 0)
-const CGS_COMPLIANCE    = CGS(1, -1, 2, 0)
-const CGS_DAMPING       = CGS(0, 1, -1, 0)
-const CGS_DIMENSIONLESS = CGS(0, 0, 0, 0)
-const CGS_DISPLACEMENT  = CGS(1, 0, 0, 0)
-const CGS_ENERGY        = CGS(2, 1, -2, 0)
-const CGS_ENTROPY       = CGS(-1, 1, -2, -1)
-const CGS_FORCE         = CGS(1, 1, -2, 0)
-const CGS_LENGTH        = CGS(1, 0, 0, 0)
-const CGS_MASS          = CGS(0, 1, 0, 0)
-const CGS_MASSDENSITY   = CGS(-3, 1, 0, 0)
-const CGS_MODULUS       = CGS(-1, 1, -2, 0)
-const CGS_POWER         = CGS(2, 1, -3, 0)
-const CGS_SECOND        = CGS(0, 0, 1, 0)
-const CGS_STIFFNESS     = CGS(0, 1, -2, 0)
-const CGS_STRAIN        = CGS(0, 0, 0, 0)
-const CGS_STRAINRATE    = CGS(0, 0, -1, 0)
-const CGS_STRESS        = CGS(-1, 1, -2, 0)
-const CGS_STRESSRATE    = CGS(-1, 1, -3, 0)
-const CGS_STRETCH       = CGS(0, 0, 0, 0)
-const CGS_STRETCHRATE   = CGS(0, 0, -1, 0)
-const CGS_TEMPERATURE   = CGS(0, 0, 0, 1)
-const CGS_TIME          = CGS(0, 0, 1, 0)
-const CGS_VELOCITY      = CGS(1, 0, -1, 0)
-const CGS_VOLUME        = CGS(3, 0, 0, 0)
+const CGS_ACCELERATION    = CGS(1, 0, -2, 0)
+const CGS_AREA            = CGS(2, 0, 0, 0)
+const CGS_COMPLIANCE      = CGS(1, -1, 2, 0)
+const CGS_DAMPING         = CGS(0, 1, -1, 0)
+const CGS_DIMENSIONLESS   = CGS(0, 0, 0, 0)
+const CGS_DISPLACEMENT    = CGS(1, 0, 0, 0)
+const CGS_ENERGY          = CGS(2, 1, -2, 0)
+const CGS_ENERGY_DENSITY  = CGS(-1, 1, -2, 0)
+const CGS_ENTROPY         = CGS(2, 1, -2, -1)
+const CGS_ENTROPY_DENSITY = CGS(-1, 1, -2, -1)
+const CGS_FORCE           = CGS(1, 1, -2, 0)
+const CGS_LENGTH          = CGS(1, 0, 0, 0)
+const CGS_MASS            = CGS(0, 1, 0, 0)
+const CGS_MASS_DENSITY    = CGS(-3, 1, 0, 0)
+const CGS_MODULUS         = CGS(-1, 1, -2, 0)
+const CGS_POWER           = CGS(2, 1, -3, 0)
+const CGS_POWER_DENSITY   = CGS(-1, 1, -3, 0)
+const CGS_SECOND          = CGS(0, 0, 1, 0)
+const CGS_STIFFNESS       = CGS(0, 1, -2, 0)
+const CGS_STRAIN          = CGS(0, 0, 0, 0)
+const CGS_STRAINRATE      = CGS(0, 0, -1, 0)
+const CGS_STRESS          = CGS(-1, 1, -2, 0)
+const CGS_STRESSRATE      = CGS(-1, 1, -3, 0)
+const CGS_STRETCH         = CGS(0, 0, 0, 0)
+const CGS_STRETCHRATE     = CGS(0, 0, -1, 0)
+const CGS_TEMPERATURE     = CGS(0, 0, 0, 1)
+const CGS_TIME            = CGS(0, 0, 1, 0)
+const CGS_VELOCITY        = CGS(1, 0, -1, 0)
+const CGS_VOLUME          = CGS(3, 0, 0, 0)
 
-# Specific units to the SI system of units.
+# Specific units for the SI system of units.
 
 const JOULE    = SI(2, 1, -2, 0)   # units of energy
 const KELVIN   = SI(0, 0, 0, 1)    # units of temperature
@@ -880,31 +883,34 @@ const PASCAL   = SI(-1, 1, -2, 0)  # units of stress
 
 # Generic units implemented in the SI system of units.
 
-const SI_ACCELERATION  = SI(1, 0, -2, 0)
-const SI_AREA          = SI(2, 0, 0, 0)
-const SI_COMPLIANCE    = SI(1, -1, 2, 0)
-const SI_DAMPING       = SI(0, 1, -1, 0)
-const SI_DIMENSIONLESS = SI(0, 0, 0, 0)
-const SI_DISPLACEMENT  = SI(1, 0, 0, 0)
-const SI_ENTROPY       = SI(-1, 1, -2, -1)
-const SI_ENERGY        = SI(2, 1, -2, 0)
-const SI_FORCE         = SI(1, 1, -2, 0)
-const SI_LENGTH        = SI(1, 0, 0, 0)
-const SI_MASS          = SI(0, 1, 0, 0)
-const SI_MASSDENSITY   = SI(-3, 1, 0, 0)
-const SI_MODULUS       = SI(-1, 1, -2, 0)
-const SI_POWER         = SI(2, 1, -3, 0)
-const SI_SECOND        = SI(0, 0, 1, 0)
-const SI_STIFFNESS     = SI(0, 1, -2, 0)
-const SI_STRAIN        = SI(0, 0, 0, 0)
-const SI_STRAINRATE    = SI(0, 0, -1, 0)
-const SI_STRESS        = SI(-1, 1, -2, 0)
-const SI_STRESSRATE    = SI(-1, 1, -3, 0)
-const SI_STRETCH       = SI(0, 0, 0, 0)
-const SI_STRETCHRATE   = SI(0, 0, -1, 0)
-const SI_TEMPERATURE   = SI(0, 0, 0, 1)
-const SI_TIME          = SI(0, 0, 1, 0)
-const SI_VELOCITY      = SI(1, 0, -1, 0)
-const SI_VOLUME        = SI(3, 0, 0, 0)
+const SI_ACCELERATION    = SI(1, 0, -2, 0)
+const SI_AREA            = SI(2, 0, 0, 0)
+const SI_COMPLIANCE      = SI(1, -1, 2, 0)
+const SI_DAMPING         = SI(0, 1, -1, 0)
+const SI_DIMENSIONLESS   = SI(0, 0, 0, 0)
+const SI_DISPLACEMENT    = SI(1, 0, 0, 0)
+const SI_ENTROPY         = SI(2, 1, -2, -1)
+const SI_ENTROPY_DENSITY = SI(-1, 1, -2, -1)
+const SI_ENERGY          = SI(2, 1, -2, 0)
+const SI_ENERGY_DENSITY  = SI(-1, 1, -2, 0)
+const SI_FORCE           = SI(1, 1, -2, 0)
+const SI_LENGTH          = SI(1, 0, 0, 0)
+const SI_MASS            = SI(0, 1, 0, 0)
+const SI_MASS_DENSITY    = SI(-3, 1, 0, 0)
+const SI_MODULUS         = SI(-1, 1, -2, 0)
+const SI_POWER           = SI(2, 1, -3, 0)
+const SI_POWER_DENSITY   = SI(-1, 1, -3, 0)
+const SI_SECOND          = SI(0, 0, 1, 0)
+const SI_STIFFNESS       = SI(0, 1, -2, 0)
+const SI_STRAIN          = SI(0, 0, 0, 0)
+const SI_STRAINRATE      = SI(0, 0, -1, 0)
+const SI_STRESS          = SI(-1, 1, -2, 0)
+const SI_STRESSRATE      = SI(-1, 1, -3, 0)
+const SI_STRETCH         = SI(0, 0, 0, 0)
+const SI_STRETCHRATE     = SI(0, 0, -1, 0)
+const SI_TEMPERATURE     = SI(0, 0, 0, 1)
+const SI_TIME            = SI(0, 0, 1, 0)
+const SI_VELOCITY        = SI(1, 0, -1, 0)
+const SI_VOLUME          = SI(3, 0, 0, 0)
 
 end # module PhysicalSystemsOfUnits
