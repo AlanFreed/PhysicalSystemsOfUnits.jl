@@ -1,4 +1,4 @@
-# PhysicalSystemsOfUnits
+# PhysicalSystemsOfUnits.jl
 
 Physical units are implementations of the abstract type
 
