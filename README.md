@@ -34,11 +34,11 @@ end
 
 Methods for type testing include:
 
-  * `isCGS()`, `isSI()` and `isDimensionless()`
+  * `isCGS(<units>)`, `isSI(<units>)` and `isDimensionless(<units>)`
 
 Method for conversion to string is:
 
-  * `toString()`
+  * `toString(<units>)`
 
 Base operators that are overloaded include:
 
@@ -48,7 +48,7 @@ Operators == and ≠ test to see if the powers of like physical units are the sa
 
 Base methods that are extended include:
 
-  * `copy()` and `deepcopy()`
+  * `copy(<units>)` and `deepcopy(<units>)`
 
 Specific CGS units that are exported include:
 
