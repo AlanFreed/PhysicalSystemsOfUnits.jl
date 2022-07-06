@@ -12,7 +12,7 @@ with concrete types being provided for the following systems of units
 
 Methods for type testing include:
 
-  * isCGS and isSI
+  * isCGS, isSI and isDimensionless
 
 Method for conversion to string is:
 
