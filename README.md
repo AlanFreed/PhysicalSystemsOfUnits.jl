@@ -34,7 +34,7 @@ end
 
 Methods for type testing include:
 
-  * `isCGS(<units>)`, `isSI(<units>)`, `isDimensionless(<units>)`, `isEquivalent(<units>, <units>)`
+  * `isCGS(<units>)`, `isSI(<units>)`, `isDimensionless(<units>)` and `isEquivalent(<units>, <units>)`
 
 Function isEquivalent will return true whenever the two arguments have the same kind of unit, e.g., isEquivalent(dyne, newton) would return true, whereas dyne == newton would return false.
 
@@ -70,9 +70,9 @@ while general SI units include:
 
 ## Notes
 
-Of the seven kinds of physical units that exist, only four are implemented here, namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.
+Of the seven kinds of physical units that exist, only four are implemented here; namely: length, mass, time and temperature. Not included are the physical units for electric current, amount of substance, and luminous intensity. There are numerous other systems of units that could be introduced in future versions of this software, if needed.
 
-Types PhysicalScalar, PhysicalVector and PhysicalMatrix, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalMatrices, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
+Types PhysicalScalar, PhysicalVector and PhysicalTensor, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalTensors, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
 
-I wrote this package for personal consumption, unbeknownst at the time of the existing package [Unitful.jl](https://github.com/PainterQubits/Unitful.jl), which is quite advanced and well supported. Even so, there remains value in implementations of type PhysicalSystemOfUnits, as they are fields in my types: PhysicalScalar, PhysicalVector and PhysicalMatrix.
+I wrote this package for personal consumption, unbeknownst at the time of the existing package [Unitful.jl](https://github.com/PainterQubits/Unitful.jl), which is quite advanced and well supported. Even so, there remains value in implementations of type PhysicalSystemOfUnits, as they are fields in my types \(PhysicalScalar, PhysicalVector and PhysicalMatrix\) where units are handled ubiquitously, behind the scene, in all scalar, vector and tensor operations.
 
