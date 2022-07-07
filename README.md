@@ -74,5 +74,5 @@ Of the seven kinds of physical units that exist, only four are implemented here;
 
 Types PhysicalScalar, PhysicalVector and PhysicalTensor, defined in module PhysicalFields and implemented in modules PhysicalScalars, PhysicalVectors and PhysicalTensors, all have a field that specifies the PhysicalSystemOfUnits in which they are evaluated.
 
-I wrote this package for personal consumption, unbeknownst at the time of the existing package [Unitful.jl](https://github.com/PainterQubits/Unitful.jl), which is quite advanced and well supported. Even so, there remains value in implementations of type PhysicalSystemOfUnits, as they are fields in my types \(PhysicalScalar, PhysicalVector and PhysicalMatrix\) where units are handled ubiquitously, behind the scene, in all scalar, vector and tensor operations.
+I wrote this package for personal consumption, unbeknownst at the time of the existing package [Unitful.jl](https://github.com/PainterQubits/Unitful.jl), which is quite advanced and well supported. Even so, there remains value in implementations of type PhysicalSystemOfUnits, as they are fields in my types \(PhysicalScalar, PhysicalVector and PhysicalTensor\) where units are handled ubiquitously, behind the scene, in all scalar, vector and tensor operations.
 
