@@ -34,7 +34,9 @@ end
 
 Methods for type testing include:
 
-  * `isCGS(<units>)`, `isSI(<units>)` and `isDimensionless(<units>)`
+  * `isCGS(<units>)`, `isSI(<units>)`, `isDimensionless(<units>)`, `isEquivalent(<units>, <units>)`
+
+Function isEquivalent will return true whenever the two arguments have the same kind of unit, e.g., isEquivalent(dyne, newton) would return true, whereas dyne == newton would return false.
 
 Method for conversion to string is:
 
@@ -44,7 +46,7 @@ Base operators that are overloaded include:
 
   * ==, ≠, + and -
 
-Operators == and ≠ test to see if the powers of like physical units are the same or not, as appropriate; for example, CGS_ACCELERATION == SI_ACCELERATION would return true. Operator + adds unit exponents whenever two physical fields are multiplied, and operator - subtracts unit exponents whenever one physical field is divided by another.
+Operators == and ≠ test to see if the powers of like physical units are the same or not and if their units are of the same kind, as appropriate; for example, CGS_ACCELERATION == SI_ACCELERATION would return false because one unit is CGS and the other is SI, whereas isEquivalent(CGS_ACCELERATION, SI_ACCELERATION) would return true because they are both the same kind of unit. Operator + adds unit exponents whenever two physical fields are multiplied, and operator - subtracts unit exponents whenever one physical field is divided by another.
 
 Base methods that are extended include:
 
