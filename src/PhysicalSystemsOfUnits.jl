@@ -16,6 +16,7 @@ export
     isCGS,
     isSI,
     isDimensionless,
+    isEquivalent,
     # Convert a System of Units to a string
     toString,
     # CGS physical constants: specific
@@ -95,6 +96,7 @@ export
 #=
 --------------------------------------------------------------------------------
 =#
+
 abstract type PhysicalSystemOfUnits end
 
 struct CGS <: PhysicalSystemOfUnits
@@ -110,6 +112,7 @@ struct SI <: PhysicalSystemOfUnits
     s::Int8    # seconds
     K::Int8    # Kelvin
 end
+
 #=
 --------------------------------------------------------------------------------
 =#
@@ -157,6 +160,53 @@ function isDimensionless(u::PhysicalSystemOfUnits)::Bool
         throw(ErrorException(msg))
     end
 end
+
+"""
+    isEquivalent(u::PhysicalSystemOfUnits, v::PhysicalSystemOfUnits)::Bool
+
+Returns `true` if `u` and `v` are the same kind of unit; otherwise, returns `false`.
+"""
+function isEquivalent(u::PhysicalSystemOfUnits, v::PhysicalSystemOfUnits)::Bool
+    if isa(u, CGS)
+        if isa(v, CGS)
+            if (u.cm == v.cm) && (u.g == v.g) && (u.s == v.s) && (u.C == v.C)
+                return true
+            else
+                return false
+            end
+        elseif isa(v, SI)
+            if (u.cm == v.m) && (u.g == v.kg) && (u.s == v.s) && (u.C == v.K)
+                return true
+            else
+                return false
+            end
+        else
+            msg = "Units must be either CGS or SI."
+            throw(ErrorException(msg))
+        end
+    elseif isa(u, SI)
+        if isa(v, SI)
+            if (u.m == v.m) && (u.kg == v.kg) && (u.s == v.s) && (u.K == v.K)
+                return true
+            else
+                return false
+            end
+        elseif isa(v, CGS)
+            if (u.m == v.cm) && (u.kg == v.g) && (u.s == v.s) && (u.K == v.C)
+                return true
+            else
+                return false
+            end
+        else
+            msg = "Units must be either CGS or SI."
+            throw(ErrorException(msg))
+        end
+    else
+        msg = "Units must be either CGS or SI."
+        throw(ErrorException(msg))
+    end
+end
+
 #=
 --------------------------------------------------------------------------------
 =#
@@ -182,19 +232,11 @@ function Base.:(==)(y::SI, z::SI)::Bool
 end
 
 function Base.:(==)(y::CGS, z::SI)::Bool
-    if (y.cm == z.m) && (y.g == z.kg) && (y.s == z.s) && (y.C == z.K)
-        return true
-    else
-        return false
-    end
+    return false
 end
 
 function Base.:(==)(y::SI, z::CGS)::Bool
-    if (y.m == z.cm) && (y.kg == z.g) && (y.s == z.s) && (y.K == z.C)
-        return true
-    else
-        return false
-    end
+    return false
 end
 
 function Base.:≠(y::CGS, z::CGS)::Bool
@@ -214,19 +256,11 @@ function Base.:≠(y::SI, z::SI)::Bool
 end
 
 function Base.:≠(y::CGS, z::SI)::Bool
-    if (y.cm ≠ z.m) || (y.g ≠ z.kg) || (y.s ≠ z.s) || (y.C ≠ z.K)
-        return true
-    else
-        return false
-    end
+    return true
 end
 
 function Base.:≠(y::SI, z::CGS)::Bool
-    if (y.m ≠ z.cm) || (y.kg ≠ z.g) || (y.s ≠ z.s) || (y.K ≠ z.C)
-        return true
-    else
-        return false
-    end
+    return true
 end
 
 function Base.:+(y::CGS)::CGS
