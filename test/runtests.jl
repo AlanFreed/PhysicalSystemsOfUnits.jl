@@ -5,13 +5,13 @@ using
     Test
 
 @testset "isCGS" begin
-    @test PhysicalSystemsOfUnits.isCGS(PhysicalSystemsOfUnits.BARYE) == true
-    @test PhysicalSystemsOfUnits.isCGS(PhysicalSystemsOfUnits.PASCAL) == false
+    @test PhysicalSystemsOfUnits.isCGS(BARYE) == true
+    @test PhysicalSystemsOfUnits.isCGS(PASCAL) == false
 end
 
 @testset "isSI" begin
-    @test PhysicalSystemsOfUnits.isSI(PhysicalSystemsOfUnits.BARYE) == false
-    @test PhysicalSystemsOfUnits.isSI(PhysicalSystemsOfUnits.PASCAL) == true
+    @test PhysicalSystemsOfUnits.isSI(BARYE) == false
+    @test PhysicalSystemsOfUnits.isSI(PASCAL) == true
 end
 
 @testset "isDimensionless" begin
@@ -19,6 +19,15 @@ end
     @test PhysicalSystemsOfUnits.isDimensionless(CGS_STRESS) == false
     @test PhysicalSystemsOfUnits.isDimensionless(SI_DIMENSIONLESS) == true
     @test PhysicalSystemsOfUnits.isDimensionless(SI_STRESS) == false
+end
+
+@testset "isEquivalent" begin
+    @test PhysicalSystemsOfUnits.isEquivalent(BARYE, PASCAL) == true
+    @test PhysicalSystemsOfUnits.isEquivalent(PASCAL, BARYE) == true
+    @test PhysicalSystemsOfUnits.isEquivalent(DYNE, BARYE) == false
+    @test PhysicalSystemsOfUnits.isEquivalent(NEWTON, PASCAL) == false
+    @test PhysicalSystemsOfUnits.isEquivalent(PASCAL, PASCAL) == true
+    @test PhysicalSystemsOfUnits.isEquivalent(BARYE, BARYE) == true
 end
 
 @testset "toString" begin
