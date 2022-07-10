@@ -1,5 +1,14 @@
 # PhysicalSystemsOfUnits.jl
 
+This package provides systems of units for physical applications.
+
+To use this module you will need to add the following Julia package to yours:
+
+```
+using Pkg
+Pkg.add(url = "https://github.com/AlanFreed/PhysicalSystemsOfUnits.jl")
+```
+
 Physical units are implementations of the abstract type
 
   * PhysicalSystemOfUnits
