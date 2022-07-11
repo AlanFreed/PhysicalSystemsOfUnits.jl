@@ -2,7 +2,7 @@
 
 This package provides systems of units for physical applications.
 
-To use this module you will need to add the following Julia package to yours:
+To use this module you will need to add it to your package:
 
 ```
 using Pkg
